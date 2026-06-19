@@ -1,0 +1,251 @@
+// Wiselionlikeking Prisma schema
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Tier {
+  FREE
+  PREMIUM
+}
+
+enum MembershipPlan {
+  MONTHLY
+  YEARLY
+}
+
+enum GameStatus {
+  SCHEDULED
+  LIVE
+  FINISHED
+}
+
+enum StreamStatus {
+  UPCOMING
+  LIVE
+  ENDED
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  FULFILLED
+  CANCELLED
+}
+
+enum MediaKind {
+  SONG          // Wiselion music track (mp3)
+  AUDIO_MESSAGE // spoken audio message / shout-out (mp3)
+  VIDEO         // mp4 video, optionally with external platform links
+}
+
+enum TxnType {
+  COIN_TOPUP        // bought coins
+  COIN_SPEND        // spent coins (bingo/lotto)
+  COIN_REWARD       // earned/won coins
+  MERCH_PURCHASE    // money purchase of merch
+  SUBSCRIPTION      // membership payment
+}
+
+model User {
+  id               String        @id @default(cuid())
+  firebaseUid      String        @unique
+  email            String        @unique
+  username         String        @unique
+  bio              String?
+  avatarUrl        String?
+  tier             Tier          @default(FREE)
+  coinBalance      Int           @default(0)
+  stripeCustomerId String?
+  createdAt        DateTime      @default(now())
+
+  membership   Membership?
+  playerCards  PlayerCard[]
+  lottoTickets LottoTicket[]
+  orders       Order[]
+  transactions Transaction[]
+}
+
+model Membership {
+  id        String         @id @default(cuid())
+  userId    String         @unique
+  user      User           @relation(fields: [userId], references: [id])
+  plan      MembershipPlan
+  startDate DateTime       @default(now())
+  endDate   DateTime
+  renewal   Boolean        @default(true)
+  stripeSubscriptionId String?
+}
+
+model Stream {
+  id          String       @id @default(cuid())
+  title       String
+  description String?
+  status      StreamStatus @default(UPCOMING)
+  scheduledAt DateTime
+  muxStreamId String?      // Mux live stream id
+  muxPlaybackId String?    // Mux playback id for the player
+  kickChannel String?      // Kick.com slug — native HLS fallback / alternative
+  premiumOnly Boolean      @default(false)
+  games       Game[]
+  createdAt   DateTime     @default(now())
+}
+
+model Game {
+  id           String       @id @default(cuid())
+  streamId     String
+  stream       Stream       @relation(fields: [streamId], references: [id])
+  title        String
+  ticketPrice  Int          // in coins
+  prize        Int          // coin prize pool
+  status       GameStatus   @default(SCHEDULED)
+  autoDrawSecs Int?         // null = manual draw
+  numbersDrawn Int[]        @default([])
+  playerCards  PlayerCard[]
+  cards        Card[]
+  createdAt    DateTime     @default(now())
+}
+
+// A generated bingo card template (1000 per game).
+model Card {
+  id       String       @id @default(cuid())
+  gameId   String
+  game     Game         @relation(fields: [gameId], references: [id])
+  gridJson Json         // number[5][5], center (2,2) = 0 (free)
+  players  PlayerCard[]
+}
+
+// A card owned/played by a user in a game.
+model PlayerCard {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  gameId    String
+  game      Game     @relation(fields: [gameId], references: [id])
+  cardId    String
+  card      Card     @relation(fields: [cardId], references: [id])
+  isWinner  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([gameId])
+  @@index([userId])
+}
+
+model LottoDraw {
+  id              String        @id @default(cuid())
+  title           String
+  drawDate        DateTime
+  ticketPrice     Int           // in coins
+  prize           Int
+  status          GameStatus    @default(SCHEDULED)
+  winningTicketId String?
+  tickets         LottoTicket[]
+  createdAt       DateTime      @default(now())
+
+  // ---- Prize Growth Engine (XRPL) ----
+  // displayedPot = initialPotXrp + ammYieldEarnedXrp + aiBoosterInjectedXrp
+  initialPotXrp        Decimal  @default(0) @db.Decimal(20, 6) // base pot (incl. any rollover)
+  ammYieldEarnedXrp    Decimal  @default(0) @db.Decimal(20, 6) // harvested AMM swap-fee yield
+  aiBoosterInjectedXrp Decimal  @default(0) @db.Decimal(20, 6) // house marketing injections
+  isRolledOver         Boolean  @default(false)
+  ammLpBalance         String?  // raw LP token balance string while deployed
+  ammStatus            String   @default("PENDING") // PENDING | DEPLOYED | FAILED | HARVESTED
+}
+
+model LottoTicket {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  drawId      String
+  draw        LottoDraw @relation(fields: [drawId], references: [id])
+  number      String    // human-readable ticket number
+  purchasedAt DateTime  @default(now())
+
+  @@index([drawId])
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  name        String
+  description String?
+  imageUrl    String?
+  priceCents  Int         // USD cents
+  stock       Int         @default(0)
+  premiumOnly Boolean     @default(false)
+  active      Boolean     @default(true)
+  orderItems  OrderItem[]
+  createdAt   DateTime    @default(now())
+}
+
+model Order {
+  id                    String      @id @default(cuid())
+  userId                String
+  user                  User        @relation(fields: [userId], references: [id])
+  status                OrderStatus @default(PENDING)
+  totalCents            Int
+  stripePaymentIntentId String?     @unique
+  paymentMethodType     String?     // 'card' | 'paypal' | 'venmo' | 'cashapp'
+  shippingAddress       Json?
+  trackingNumber        String?
+  items                 OrderItem[]
+  createdAt             DateTime    @default(now())
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  priceCents Int    // unit price snapshot
+}
+
+// Songs, audio messages, and videos browsable in the app's Media tab.
+model MediaItem {
+  id            String    @id @default(cuid())
+  kind          MediaKind
+  title         String
+  artist        String?   // for SONG
+  description   String?
+  url           String?   // mp3 (audio) or mp4 (video) CDN url; null for link-only videos
+  artworkUrl    String?   // cover art / thumbnail
+  durationSec   Int?
+  premiumOnly   Boolean   @default(false)
+  // External platform links shown on the video player, e.g.
+  // { "youtube": "...", "spotify": "...", "apple": "...", "instagram": "...", "kick": "..." }
+  platformLinks Json?
+  // DEPLATFORMING CONTINGENCY
+  // ownedBackupUrl: a self-hosted mp3/mp4 we control. The app ALWAYS prefers an
+  //   owned source over any third-party platform, so content survives a ban.
+  ownedBackupUrl String?
+  // platformStatus: per-platform availability, e.g. { "youtube": "removed" }.
+  //   When a platform is marked "removed", the app hides that link and falls
+  //   back to ownedBackupUrl / url.
+  platformStatus Json?
+  // kickChannel: Kick.com channel slug for native (HLS) live playback.
+  kickChannel    String?
+  sortOrder     Int       @default(0)
+  active        Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+
+  @@index([kind, active])
+}
+
+model Transaction {
+  id                String   @id @default(cuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id])
+  type              TxnType
+  coinAmount        Int      @default(0)  // +credit / -debit (coins)
+  cashCents         Int      @default(0)  // money amount if applicable
+  paymentMethodType String?  // method used for cash txns
+  description       String
+  createdAt         DateTime @default(now())
+
+  @@index([userId])
+}

@@ -1,0 +1,7 @@
+-- AlterTable
+ALTER TABLE "LottoDraw" ADD COLUMN     "aiBoosterInjectedXrp" DECIMAL(20,6) NOT NULL DEFAULT 0,
+ADD COLUMN     "ammLpBalance" TEXT,
+ADD COLUMN     "ammStatus" TEXT NOT NULL DEFAULT 'PENDING',
+ADD COLUMN     "ammYieldEarnedXrp" DECIMAL(20,6) NOT NULL DEFAULT 0,
+ADD COLUMN     "initialPotXrp" DECIMAL(20,6) NOT NULL DEFAULT 0,
+ADD COLUMN     "isRolledOver" BOOLEAN NOT NULL DEFAULT false;

@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.env
+.env.local
+*.log
+.expo/
+.DS_Store
+server/prisma/migrations/dev.db
+
+# build artifacts / local
+mobile/.easignore.local
+coverage/
+*.tsbuildinfo
+play-service-account.json

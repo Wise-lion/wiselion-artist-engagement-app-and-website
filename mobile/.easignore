@@ -1,0 +1,7 @@
+# Files not needed in the EAS build upload
+node_modules/
+.expo/
+.git/
+*.log
+.env
+play-service-account.json

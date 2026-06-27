@@ -14,6 +14,8 @@ import CartScreen from '../screens/merch/CartScreen';
 import CheckoutScreen from '../screens/merch/CheckoutScreen';
 import MembershipScreen from '../screens/profile/MembershipScreen';
 import VideoScreen from '../screens/media/VideoScreen';
+import DropReelScreen from '../screens/drop/DropReelScreen';
+import MissionScreen from '../screens/mission/MissionScreen';
 
 export type RootStackParams = {
   Tabs: undefined;
@@ -25,6 +27,8 @@ export type RootStackParams = {
   Checkout: undefined;
   Membership: undefined;
   Video: { item: any };
+  DropReel: undefined;
+  Mission: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParams>();
@@ -74,6 +78,8 @@ export default function RootNavigator() {
             <Stack.Screen name="Checkout" component={CheckoutScreen} options={{ title: 'Checkout' }} />
             <Stack.Screen name="Membership" component={MembershipScreen} options={{ title: 'Go Premium' }} />
             <Stack.Screen name="Video" component={VideoScreen} options={{ title: 'Watch' }} />
+            <Stack.Screen name="DropReel" component={DropReelScreen} options={{ headerShown: false, presentation: 'fullScreenModal' }} />
+            <Stack.Screen name="Mission" component={MissionScreen} options={{ title: 'The Mission' }} />
           </>
         )}
       </Stack.Navigator>

@@ -51,8 +51,10 @@ export default function ProfileScreen() {
           <Button title="Save Profile" loading={saving} onPress={save} />
         </Card>
 
+        <Button variant="ghost" title="🦁 The Mission — Lion Conservation" onPress={() => nav.navigate('Mission')} style={{ marginTop: 16 }} />
+
         {profile?.tier !== 'PREMIUM' && (
-          <Button title="👑 Go Premium" onPress={() => nav.navigate('Membership')} style={{ marginTop: 16 }} />
+          <Button title="👑 Go Premium" onPress={() => nav.navigate('Membership')} style={{ marginTop: 8 }} />
         )}
         <Button variant="ghost" title="Log Out" onPress={logout} style={{ marginTop: 8 }} />
       </ScrollView>

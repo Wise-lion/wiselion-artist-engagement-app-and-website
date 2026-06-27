@@ -7,6 +7,10 @@ import { config, DEV_MODE } from './src/config';
 import { useAuthStore } from './src/store/useAuthStore';
 import RootNavigator from './src/navigation/RootNavigator';
 import { MiniPlayer } from './src/components/MiniPlayer';
+import { useFonts } from 'expo-font';
+import { Anton_400Regular } from '@expo-google-fonts/anton';
+import { Cinzel_500Medium, Cinzel_700Bold, Cinzel_900Black } from '@expo-google-fonts/cinzel';
+import { SpaceMono_400Regular, SpaceMono_700Bold } from '@expo-google-fonts/space-mono';
 
 // Native payment SDKs (@stripe/stripe-react-native, react-native-purchases) do
 // NOT run in Expo Go. In DEV_MODE we skip them entirely so the core app runs on
@@ -25,6 +29,17 @@ function PaymentsProvider({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   const init = useAuthStore((s) => s.init);
+
+  // Drop Reel brand fonts. Don't block app launch on them — render either way;
+  // the reel falls back to system fonts until these load.
+  useFonts({
+    Anton_400Regular,
+    Cinzel_500Medium,
+    Cinzel_700Bold,
+    Cinzel_900Black,
+    SpaceMono_400Regular,
+    SpaceMono_700Bold,
+  });
 
   useEffect(() => {
     init();

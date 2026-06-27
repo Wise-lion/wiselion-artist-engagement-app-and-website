@@ -26,6 +26,18 @@ export default function StoreScreen() {
           <Body style={{ color: theme.goldLight }}>Cart ({cartCount})</Body>
         </Pressable>
       </View>
+
+      {/* Cinematic promo for the latest drop (Wiselion × Tribe of Kings). */}
+      <Pressable
+        onPress={() => nav.navigate('DropReel')}
+        style={{ marginTop: 12, backgroundColor: '#080607', borderRadius: 14, borderWidth: 1, borderColor: '#d4af37', padding: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
+      >
+        <View>
+          <Body style={{ color: '#e7c463', fontWeight: '800', fontSize: 16 }}>▶ Watch the Drop</Body>
+          <Body style={{ color: theme.textDim, fontSize: 12 }}>Wiselion × Tribe of Kings — Like-King Tee</Body>
+        </View>
+        <Body style={{ color: '#e7c463', fontSize: 22 }}>→</Body>
+      </Pressable>
       <FlatList
         style={{ marginTop: 12 }}
         data={products}

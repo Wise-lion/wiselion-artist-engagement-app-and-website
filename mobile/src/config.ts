@@ -19,6 +19,9 @@ export const config = {
     android: process.env.EXPO_PUBLIC_REVENUECAT_ANDROID_KEY || '',
   },
   avatarAudioBaseUrl: process.env.EXPO_PUBLIC_AVATAR_AUDIO_BASE_URL || 'https://cdn.wiselion.app/audio',
+  // When set, the Drop Reel loads its tee artwork from this CDN base instead of
+  // the bundled PNGs (keeps ~60 MB out of the app binary). Falls back to bundled.
+  dropReelBaseUrl: process.env.EXPO_PUBLIC_DROP_REEL_BASE_URL || '',
 };
 
 // Brand palette inspired by the golden Wiselion King avatar.

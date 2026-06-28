@@ -5,6 +5,7 @@ import { prisma } from '../lib/prisma';
 import { requireAuth, requireAdmin, AuthedRequest } from '../middleware/auth';
 import { spendCoins, InsufficientCoinsError } from '../utils/coins';
 import { runLottoDraw } from '../services/lotto';
+import { autoPromoteDrop } from '../services/visibility';
 
 const router = Router();
 
@@ -74,6 +75,9 @@ router.post('/', requireAdmin, async (req, res) => {
   const draw = await prisma.lottoDraw.create({
     data: { ...parsed.data, drawDate: new Date(parsed.data.drawDate) },
   });
+  // Auto-trigger the War Room @content agent to draft promo posts (non-blocking,
+  // best-effort; opt-in via AUTO_PROMOTE). Drafts land in the Visibility queue.
+  autoPromoteDrop({ title: draw.title, drawId: draw.id, productName: 'Like-King Tee', price: '$48' });
   res.status(201).json(draw);
 });
 

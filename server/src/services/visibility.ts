@@ -76,3 +76,15 @@ export async function draftDropPromo(ctx: DropContext, trigger = 'drop.scheduled
 
   return created;
 }
+
+/**
+ * Fire-and-forget auto-promotion: call this when a drop is scheduled. It never
+ * throws (War Room offline = logged no-op) and never blocks the caller, so it's
+ * safe to invoke without awaiting from a route handler. Gated by AUTO_PROMOTE.
+ */
+export function autoPromoteDrop(ctx: DropContext, trigger = 'drop.scheduled'): void {
+  if (process.env.AUTO_PROMOTE !== 'true') return; // opt-in
+  draftDropPromo(ctx, trigger)
+    .then((drafts) => console.log(`🗞️  Auto-drafted ${drafts.length} promo posts for "${ctx.title}"`))
+    .catch((e) => console.warn(`Auto-promote skipped for "${ctx.title}": ${e.message}`));
+}

@@ -236,6 +236,28 @@ model MediaItem {
   @@index([kind, active])
 }
 
+// Marketing drafts produced by the War Room @content agent, awaiting human
+// approval before @comms publishes them. The approve-first safety gate.
+enum PromoStatus {
+  DRAFT
+  APPROVED
+  REJECTED
+  PUBLISHED
+}
+
+model PromoDraft {
+  id        String      @id @default(cuid())
+  trigger   String      // e.g. "drop.scheduled", "lotto.winner"
+  channel   String      // "instagram" | "tiktok" | "x" | "email" | ...
+  subject   String?     // for email
+  body      String      // the drafted copy
+  status    PromoStatus @default(DRAFT)
+  meta      Json?       // refs: drawId/productId, asset (drop reel) etc.
+  createdAt DateTime    @default(now())
+
+  @@index([status])
+}
+
 model Transaction {
   id                String   @id @default(cuid())
   userId            String

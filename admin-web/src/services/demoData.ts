@@ -6,7 +6,7 @@ const id = () => Math.random().toString(36).slice(2, 9);
 
 type Any = Record<string, any>;
 
-const db: { streams: Any[]; games: Any[]; lotto: Any[]; products: Any[]; media: Any[] } = {
+const db: { streams: Any[]; games: Any[]; lotto: Any[]; products: Any[]; media: Any[]; promoDrafts: Any[] } = {
   streams: [
     {
       id: 'str_demo1',
@@ -48,6 +48,11 @@ const db: { streams: Any[]; games: Any[]; lotto: Any[]; products: Any[]; media: 
     { id: 'med_1', kind: 'SONG', title: 'King of the Pride', artist: 'Wiselion', durationSec: 212, premiumOnly: false, url: 'https://cdn.wiselion.app/media/king-of-the-pride.mp3' },
     { id: 'med_2', kind: 'AUDIO_MESSAGE', title: 'Welcome to the Pride', description: 'Message from the King', durationSec: 48, url: 'https://cdn.wiselion.app/media/welcome-message.mp3' },
     { id: 'med_3', kind: 'VIDEO', title: 'Wiselion Live — Highlights', url: 'https://cdn.wiselion.app/media/highlights.mp4', platformLinks: { youtube: 'https://youtube.com/@wiselion' } },
+  ],
+  promoDrafts: [
+    { id: 'pd_1', trigger: 'drop.scheduled', channel: 'instagram', body: '👑 THE DROP IS HERE.\nWiselion × Tribe of Kings — 8 designs, one mask, every form.\nLike-King Tee, $48. A share funds wild-lion conservation.\n\n#Wiselion #LikeAKing #TribeOfKings #StreetwearDrop #SaveTheLions', status: 'DRAFT', createdAt: new Date().toISOString() },
+    { id: 'pd_2', trigger: 'drop.scheduled', channel: 'x', body: 'The Drop Reel is live. 8 cyber-regal tees, $48, limited to 250. Every cop protects wild lions. 🦁👑 wiselion.shop #Wiselion', status: 'DRAFT', createdAt: new Date().toISOString() },
+    { id: 'pd_3', trigger: 'drop.scheduled', channel: 'email', subject: 'The Like-King Tee just dropped 👑', body: 'Royalty has a uniform. The Wiselion × Tribe of Kings drop is live — 8 designs, $48, only 250 pieces. Watch the Drop Reel, pick your form, and know that a share of every order funds rangers protecting wild lions with Big Life Foundation. Cop yours before the pride does.', status: 'APPROVED', createdAt: new Date(Date.now() - 3600000).toISOString() },
   ],
 };
 
@@ -137,6 +142,32 @@ export function demoRequest<T>(method: string, path: string, body?: any): Promis
     const m = db.media.find((x) => x.id === mediaPatch[1]);
     if (m) Object.assign(m, body);
     return reply(m);
+  }
+
+  // ---- Visibility (War Room) ----
+  if (path === '/visibility/warroom/status' && method === 'GET') return reply({ online: false });
+  if (path.startsWith('/visibility/drafts') && method === 'GET') {
+    const m = path.match(/status=(\w+)/);
+    return reply(m ? db.promoDrafts.filter((d) => d.status === m[1]) : db.promoDrafts);
+  }
+  const draftDrop = path.match(/^\/visibility\/draft\/drop\/(\w+)$/);
+  if (draftDrop && method === 'POST') {
+    // Simulate @content drafting a fresh set.
+    const channels = ['instagram', 'tiktok', 'x', 'email'];
+    const made = channels.map((c) => ({
+      id: id(), trigger: 'drop.scheduled', channel: c,
+      subject: c === 'email' ? 'New Wiselion drop just landed 👑' : undefined,
+      body: `[${c.toUpperCase()} draft] Wiselion × Tribe of Kings drop — Like-King Tee $48. Watch the Drop Reel. A share funds lion conservation. 🦁👑`,
+      status: 'DRAFT', createdAt: new Date().toISOString(),
+    }));
+    db.promoDrafts.unshift(...made);
+    return reply({ count: made.length, drafts: made });
+  }
+  const draftPatch = path.match(/^\/visibility\/drafts\/(\w+)$/);
+  if (draftPatch && method === 'PATCH') {
+    const d = db.promoDrafts.find((x) => x.id === draftPatch[1]);
+    if (d) d.status = body.action === 'reject' ? 'REJECTED' : 'PUBLISHED';
+    return reply(d);
   }
 
   return reply([] as any);

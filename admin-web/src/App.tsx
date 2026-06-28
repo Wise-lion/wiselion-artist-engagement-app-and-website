@@ -10,6 +10,7 @@ import BingoGames from './pages/BingoGames';
 import LottoDraws from './pages/LottoDraws';
 import Merch from './pages/Merch';
 import Media from './pages/Media';
+import Visibility from './pages/Visibility';
 
 export default function App() {
   const [user, setUser] = useState<any>(null);
@@ -36,6 +37,7 @@ export default function App() {
             ['/lotto', 'Lotto Draws'],
             ['/merch', 'Merch'],
             ['/media', 'Media'],
+            ['/visibility', 'Visibility'],
           ].map(([to, label]) => (
             <NavLink
               key={to}
@@ -69,6 +71,7 @@ export default function App() {
             <Route path="/lotto" element={<LottoDraws />} />
             <Route path="/merch" element={<Merch />} />
             <Route path="/media" element={<Media />} />
+            <Route path="/visibility" element={<Visibility />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </main>

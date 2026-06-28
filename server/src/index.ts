@@ -15,6 +15,7 @@ import merch from './routes/merch';
 import wallet from './routes/wallet';
 import subscriptions from './routes/subscriptions';
 import media from './routes/media';
+import visibility from './routes/visibility';
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.use('/api/merch', merch);
 app.use('/api/wallet', wallet);
 app.use('/api/subscriptions', subscriptions);
 app.use('/api/media', media);
+app.use('/api/visibility', visibility);
 
 // Centralized error handler.
 app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {

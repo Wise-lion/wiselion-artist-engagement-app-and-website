@@ -18,14 +18,20 @@ export const TOURS = [
   { date: 'SEP 06', city: 'Los Angeles, CA', venue: 'The Roxy', status: 'SOLD OUT' },
 ];
 
+// Where "COP NOW" sends shoppers until per-product links are set. Point this at
+// your Printful/Teespring store, or a Stripe Payment Link / Linktree.
+export const SHOP_URL = 'https://wiselion.shop';
+
 // Real tee artwork (shared with the app via /public/drop-reel/).
+// buyUrl: paste each product's Printful / Teespring / Stripe link here. When
+// empty, the button falls back to SHOP_URL.
 export const MERCH = [
-  { name: '“Like-King” Tee', price: '$48', tag: 'THE DROP', img: '/drop-reel/anime_tshirt_design.webp' },
-  { name: 'Synthwave Tee', price: '$48', tag: 'NEON DROP', img: '/drop-reel/synthwave_tshirt.webp' },
-  { name: 'Graffiti Tee', price: '$48', tag: 'WALL KING', img: '/drop-reel/graffiti_tshirt.webp' },
-  { name: 'Ukiyo-e Tee', price: '$52', tag: 'FLOATING WORLD', img: '/drop-reel/ukiyoe_tshirt.webp' },
-  { name: 'Stencil Tee', price: '$44', tag: 'SPRAY ICON', img: '/drop-reel/spray_paint_stencil.webp' },
-  { name: 'Vector Tee', price: '$44', tag: 'CLEAN CUT', img: '/drop-reel/minimalist_vector_v2.webp' },
+  { name: '“Like-King” Tee', price: '$48', tag: 'THE DROP', img: '/drop-reel/anime_tshirt_design.webp', buyUrl: '' },
+  { name: 'Synthwave Tee', price: '$48', tag: 'NEON DROP', img: '/drop-reel/synthwave_tshirt.webp', buyUrl: '' },
+  { name: 'Graffiti Tee', price: '$48', tag: 'WALL KING', img: '/drop-reel/graffiti_tshirt.webp', buyUrl: '' },
+  { name: 'Ukiyo-e Tee', price: '$52', tag: 'FLOATING WORLD', img: '/drop-reel/ukiyoe_tshirt.webp', buyUrl: '' },
+  { name: 'Stencil Tee', price: '$44', tag: 'SPRAY ICON', img: '/drop-reel/spray_paint_stencil.webp', buyUrl: '' },
+  { name: 'Vector Tee', price: '$44', tag: 'CLEAN CUT', img: '/drop-reel/minimalist_vector_v2.webp', buyUrl: '' },
 ];
 
 export const PILLARS = [

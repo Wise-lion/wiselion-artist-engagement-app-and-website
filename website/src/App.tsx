@@ -1,6 +1,6 @@
 // Wiselion — Claude-native cyberpunk artist site (single-page, Manus-free).
 // Sections: Hero · Music · Tours · Merch · Mission · Join the Pride.
-import { MUSIC, STREAM_LINKS, TOURS, MERCH, PILLARS, IMPACT, TIERS, SHOP_URL } from './data';
+import { MUSIC, STREAM_LINKS, TOURS, MERCH, PILLARS, IMPACT, TIERS, SHOP_URL, orderMailto } from './data';
 import DropReel from './DropReel';
 import AudioPlayer from './AudioPlayer';
 
@@ -124,7 +124,7 @@ function Merch() {
               <div style={{ fontFamily: 'var(--display)', color: '#fff', fontSize: 16, marginTop: 4 }}>{m.name}</div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 12 }}>
                 <span style={{ fontFamily: 'var(--display)', fontSize: 22, color: 'var(--neon-gold)' }}>{m.price}</span>
-                <a className="btn btn-gold" href={m.buyUrl || SHOP_URL} target="_blank" rel="noreferrer">COP NOW</a>
+                <a className="btn btn-gold" href={m.buyUrl || orderMailto(m.name, m.price)}>COP NOW</a>
               </div>
             </div>
           ))}

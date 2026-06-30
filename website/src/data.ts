@@ -18,9 +18,20 @@ export const TOURS = [
   { date: 'SEP 06', city: 'Los Angeles, CA', venue: 'The Roxy', status: 'SOLD OUT' },
 ];
 
-// Where "COP NOW" sends shoppers until per-product links are set. Point this at
-// your Printful/Teespring store, or a Stripe Payment Link / Linktree.
-export const SHOP_URL = 'https://wiselion.shop';
+// Order contact until a self-checkout storefront (Big Cartel / Etsy / Shopify)
+// is connected to Printful. "COP NOW" opens a pre-filled order email.
+export const ORDER_EMAIL = 'wlikeking@gmail.com';
+
+// Build a mailto: link pre-filled with the product, so orders arrive ready to
+// fulfil. Swap to real per-product checkout URLs later (set buyUrl on MERCH).
+export const orderMailto = (product: string, price: string) =>
+  `mailto:${ORDER_EMAIL}?subject=${encodeURIComponent(`Order: ${product} (${price})`)}` +
+  `&body=${encodeURIComponent(
+    `I'd like to order the ${product} — ${price}.\n\nSize: \nColor: \nQuantity: \n\nShipping name:\nAddress:\n\n(Wiselion will reply with payment + confirmation.)`
+  )}`;
+
+// Fallback shop link for the Drop Reel CTA etc.
+export const SHOP_URL = `mailto:${ORDER_EMAIL}?subject=${encodeURIComponent('Wiselion order')}`;
 
 // Real tee artwork (shared with the app via /public/drop-reel/).
 // buyUrl: paste each product's Printful / Teespring / Stripe link here. When

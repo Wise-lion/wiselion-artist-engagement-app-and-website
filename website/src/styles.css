@@ -77,15 +77,64 @@ h1, h2, h3 { font-family: var(--display); color: #fff; margin: 0; }
 .nav a { font-size: 12px; letter-spacing: 1px; color: #00d9ff99; }
 .nav a:hover { color: var(--neon-cyan); }
 
-/* --- hero --- */
+/* --- hero (animated: breathing lion mask + flame wordmark + embers) --- */
 .hero { position: relative; text-align: center; padding: 90px 22px 80px; overflow: hidden; min-height: 560px; }
-/* Animated video background (Higgsfield export). Falls back to the poster PNG
-   automatically when /hero-lion.mp4 is absent. Also works as a still image. */
+
+/* Lion mask background — slow breathing pulse */
 .hero-media {
   position: absolute; inset: 0; width: 100%; height: 100%;
   object-fit: cover; opacity: 0.38; filter: saturate(1.12);
+  transform-origin: 50% 38%; animation: lionBreathe 6.4s ease-in-out infinite;
 }
+@keyframes lionBreathe {
+  0%, 100% { transform: scale(1); filter: saturate(1.12) brightness(1); }
+  50% { transform: scale(1.025); filter: saturate(1.3) brightness(1.1); }
+}
+
+/* Amber glow pulsing over the mask's eye sockets (screen-blended) */
+.eye-glow {
+  position: absolute; inset: 0; pointer-events: none; mix-blend-mode: screen; opacity: .85;
+  background:
+    radial-gradient(70px 56px at 39% 47%, rgba(255,205,110,.6), transparent 62%),
+    radial-gradient(70px 56px at 61% 47%, rgba(255,205,110,.6), transparent 62%),
+    radial-gradient(40px 34px at 50% 31%, rgba(120,190,255,.35), transparent 65%);
+  animation: eyePulse 3.4s ease-in-out infinite;
+}
+@keyframes eyePulse { 0%, 100% { opacity: .3; } 50% { opacity: .9; } }
+
 .hero-vignette { position: absolute; inset: 0; background: radial-gradient(62% 72% at 50% 35%, transparent 42%, #0a0a0a 100%); }
 .hero-veil { position: absolute; inset: 0; background: radial-gradient(70% 80% at 50% 30%, #b500ff22, transparent 70%); }
 .scanlines { position: absolute; inset: 0; pointer-events: none; opacity: .12;
   background: repeating-linear-gradient(0deg, #00d9ff 0, #00d9ff 1px, transparent 1px, transparent 4px); }
+
+/* WISELION wordmark — animated flame gradient + flicker, with rising embers */
+.flame-wrap { position: relative; display: inline-block; padding: 6px 4px; }
+.hero h1 {
+  font-family: var(--display); margin: 0; font-size: 56px; letter-spacing: 4px; position: relative; z-index: 2;
+  background: linear-gradient(0deg, #ff2d00 0%, #ff7a00 22%, #ffb700 42%, #fff3c4 52%, #ffd60a 60%, #ff7a00 78%, #ff2d00 100%);
+  background-size: 100% 280%;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 10px #ff7a0090) drop-shadow(0 0 26px #ff006e60);
+  animation: flameShift 2.6s linear infinite, flameFlicker 160ms steps(3) infinite;
+}
+@keyframes flameShift { 0% { background-position: 0% 10%; } 100% { background-position: 0% 130%; } }
+@keyframes flameFlicker {
+  0% { transform: translateY(0) skewX(0deg); }
+  30% { transform: translateY(-1px) skewX(.4deg); }
+  60% { transform: translateY(.5px) skewX(-.3deg); }
+  100% { transform: translateY(0) skewX(0deg); }
+}
+.ember {
+  position: absolute; bottom: 8px; width: 3px; height: 3px; border-radius: 50%;
+  background: #ffae42; box-shadow: 0 0 6px 2px #ff8c0099; pointer-events: none;
+  animation-name: emberRise; animation-timing-function: ease-out; animation-iteration-count: infinite;
+}
+@keyframes emberRise {
+  0% { transform: translate(0,0) scale(1); opacity: 0; }
+  12% { opacity: 1; }
+  100% { transform: translate(var(--drift,8px),-90px) scale(.3); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-media, .eye-glow, .hero h1, .ember { animation: none !important; }
+}

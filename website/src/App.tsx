@@ -6,7 +6,7 @@ import AudioPlayer from './AudioPlayer';
 
 // Hero background image. Drop the golden cyber-lion at public/hero-lion.png and
 // it blends in automatically (with the neon veil/vignette on top).
-const HERO_IMG = '/hero-lion.png';
+const HERO_IMG = '/lion-mask.png';
 
 function Nav() {
   const links = ['music', 'tours', 'merch', 'reel', 'mission', 'pride'];
@@ -24,22 +24,32 @@ function Nav() {
   );
 }
 
+// Embers that rise behind the flaming wordmark (randomized once).
+const EMBERS = Array.from({ length: 16 }, () => ({
+  left: `${Math.random() * 100}%`,
+  '--drift': `${(Math.random() * 24 - 12).toFixed(1)}px`,
+  animationDuration: `${(1.8 + Math.random() * 1.6).toFixed(2)}s`,
+  animationDelay: `${(Math.random() * 2.4).toFixed(2)}s`,
+})) as any[];
+
 function Hero() {
   return (
     <header id="top" className="hero hud">
       <span className="c-bl" /><span className="c-br" />
-      {/* Animated hero: plays /hero-lion.mp4 (Higgsfield export) and shows the
-          PNG poster instantly + as fallback if the video isn't present yet. */}
-      <video className="hero-media" autoPlay loop muted playsInline poster={HERO_IMG}>
-        <source src="/hero-lion.mp4" type="video/mp4" />
-        <source src="/hero-lion.webm" type="video/webm" />
-      </video>
+      {/* Breathing lion mask + amber eye-glow (CSS-animated, no video needed). */}
+      <img className="hero-media" src={HERO_IMG} alt="" />
+      <div className="eye-glow" />
       <div className="hero-vignette" />
       <div className="hero-veil" />
       <div className="scanlines" />
       <div style={{ position: 'relative', zIndex: 2 }}>
-        <h1 style={{ fontSize: 56, letterSpacing: 4 }} className="glow-cyan">WISELION</h1>
-        <div style={{ fontFamily: 'var(--mono)', letterSpacing: 6, color: 'var(--neon-pink)', marginTop: 8 }}>
+        <div className="flame-wrap">
+          <h1>WISELION</h1>
+          {EMBERS.map((e, i) => (
+            <span key={i} className="ember" style={e} />
+          ))}
+        </div>
+        <div className="tagline" style={{ fontFamily: 'var(--mono)', letterSpacing: 6, color: 'var(--neon-pink)', marginTop: 8 }}>
           MUSICIAN · LION ACTIVIST · KING
         </div>
         <div style={{ display: 'flex', gap: 14, justifyContent: 'center', marginTop: 28, flexWrap: 'wrap' }}>

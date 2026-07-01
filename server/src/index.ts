@@ -16,6 +16,7 @@ import wallet from './routes/wallet';
 import subscriptions from './routes/subscriptions';
 import media from './routes/media';
 import visibility from './routes/visibility';
+import publicRoutes from './routes/public';
 
 const app = express();
 
@@ -27,6 +28,11 @@ app.use(cors({ origin: env.clientOrigin === '*' ? true : env.clientOrigin }));
 app.use(express.json());
 
 app.get('/health', (_req, res) => res.json({ ok: true, service: 'wiselionlikeking' }));
+
+// Public marketing endpoints (read-only, no auth) — CORS wide open here since
+// this is safe-for-any-origin data the public website reads. Everything else
+// stays behind the app's restricted CORS + auth above.
+app.use('/api/public', cors({ origin: true }), publicRoutes);
 
 app.use('/api/users', users);
 app.use('/api/streams', streams);

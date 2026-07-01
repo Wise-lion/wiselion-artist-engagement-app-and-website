@@ -1,8 +1,26 @@
 // Wiselion — Claude-native cyberpunk artist site (single-page, Manus-free).
 // Sections: Hero · Music · Tours · Merch · Mission · Join the Pride.
+import { useEffect, useState } from 'react';
 import { MUSIC, STREAM_LINKS, TOURS, MERCH, PILLARS, IMPACT, TIERS, SHOP_URL, orderMailto } from './data';
+import { getLiveProducts, getLiveSongs, LiveProduct, LiveMedia } from './liveData';
 import DropReel from './DropReel';
 import AudioPlayer from './AudioPlayer';
+
+// Shape the live API data into what the existing card markup expects, so the
+// UI is identical whether it's showing real or placeholder data.
+const productToCard = (p: LiveProduct) => ({
+  name: p.name,
+  price: `$${(p.priceCents / 100).toFixed(2)}`,
+  tag: p.stock > 0 ? 'IN STOCK' : 'SOLD OUT',
+  img: p.imageUrl || MERCH[0].img,
+  buyUrl: '',
+});
+const songToCard = (m: LiveMedia, i: number) => ({
+  title: m.title,
+  kind: 'Single',
+  year: String(new Date().getFullYear()),
+  _key: m.id || String(i),
+});
 
 // Hero background image. Drop the golden cyber-lion at public/hero-lion.png and
 // it blends in automatically (with the neon veil/vignette on top).
@@ -62,6 +80,15 @@ function Hero() {
 }
 
 function Music() {
+  // Live songs from the app's media library; falls back to the placeholder
+  // list in data.ts if the server isn't deployed yet / unreachable.
+  const [songs, setSongs] = useState(MUSIC.map((m, i) => ({ ...m, _key: String(i) })));
+  useEffect(() => {
+    getLiveSongs([]).then((live) => {
+      if (live.length) setSongs(live.map(songToCard));
+    });
+  }, []);
+
   return (
     <section id="music" className="section">
       <div className="wrap">
@@ -76,8 +103,8 @@ function Music() {
         </div>
         <h2 style={{ fontSize: 28, marginBottom: 24 }}>EPs &amp; Singles</h2>
         <div className="grid grid-3">
-          {MUSIC.map((m) => (
-            <div key={m.title} className="card pink">
+          {songs.map((m) => (
+            <div key={m._key} className="card pink">
               <div style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--neon-pink)', letterSpacing: 2 }}>{m.kind} · {m.year}</div>
               <div style={{ fontFamily: 'var(--display)', color: '#fff', fontSize: 20, marginTop: 8 }}>{m.title}</div>
               <div style={{ marginTop: 12, color: 'var(--neon-cyan)' }}>▶ ───────────●──</div>
@@ -119,13 +146,22 @@ function Tours() {
 }
 
 function Merch() {
+  // Live products from the app's Prisma database; falls back to the
+  // placeholder MERCH list in data.ts if the server isn't deployed yet.
+  const [items, setItems] = useState(MERCH);
+  useEffect(() => {
+    getLiveProducts([]).then((live) => {
+      if (live.length) setItems(live.map(productToCard));
+    });
+  }, []);
+
   return (
     <section id="merch" className="section">
       <div className="wrap">
         <div className="eyebrow">// MERCH</div>
         <h2 style={{ fontSize: 32, marginBottom: 24 }}>The Drop</h2>
         <div className="grid grid-3">
-          {MERCH.map((m) => (
+          {items.map((m) => (
             <div key={m.name} className="card gold">
               <div style={{ height: 180, overflow: 'hidden', background: '#000' }}>
                 <img src={m.img} alt={m.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />

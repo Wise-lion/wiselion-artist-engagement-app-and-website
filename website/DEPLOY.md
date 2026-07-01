@@ -13,7 +13,7 @@ The site is a static Vite build (no backend needed). Easiest host: **Vercel**
    **`website`**. (Important: the repo has app/server/admin too; Vercel must build
    only the `website` folder.)
 5. Vercel auto-detects **Vite**. Leave Build Command (`npm run build`) and Output
-   Directory (`dist`) as detected. No env vars needed.
+   Directory (`dist`) as detected. No env vars needed to deploy.
 6. Click **Deploy**. ~1 minute later you get a live URL like
    `wiselion-xxxx.vercel.app`.
 
@@ -34,6 +34,24 @@ vercel --prod     # deploy to production
 ## Auto-deploys
 Once connected, **every `git push` to `main` redeploys automatically**. To update
 the live site: edit, commit, push.
+
+## Connecting to live app data (once the server is deployed)
+
+The website already knows how to pull real merch + music from the app's
+database instead of the placeholder content in `src/data.ts` — it's just not
+turned on yet, because the server (`wiselionlikeking/server`) only runs on a
+laptop today.
+
+Once the server has a public URL (e.g. deployed to Render/Railway):
+1. In Vercel → your project → **Settings → Environment Variables** → add
+   `VITE_API_URL` = `https://<your-server-url>/api`
+2. Redeploy. The Merch and Music sections will automatically start showing
+   real data from the app's admin panel — no code changes needed.
+3. If the API is ever unreachable, the site silently falls back to the
+   placeholder content, so it never breaks.
+
+Deliberately NOT connected yet (needs testing/legal first, see PREFLIGHT.md):
+checkout/payments, bingo/lotto gameplay, user accounts.
 
 ## Before you call it "launched"
 - [ ] Replace `public/hero-lion.png` with the real lion art (or the Higgsfield video as `public/hero-lion.mp4`).

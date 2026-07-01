@@ -94,11 +94,18 @@ function Music() {
       <div className="wrap">
         <div className="eyebrow">// MUSIC</div>
         <h2 style={{ fontSize: 32, marginBottom: 16 }}>Latest Release</h2>
-        <div style={{ marginBottom: 28 }}>
+        <div style={{ marginBottom: 12 }}>
           <AudioPlayer
             src="/music/dust-trails-and-neon-vibes.mp3"
             title="Dust Trails and Neon Vibes"
             sub="WISELION · NEW SINGLE"
+          />
+        </div>
+        <div style={{ marginBottom: 28 }}>
+          <AudioPlayer
+            src="/music/dust-trails-and-neon-vibes-vocals.mp3"
+            title="Dust Trails and Neon Vibes (Vocals)"
+            sub="WISELION · VOCAL MIX"
           />
         </div>
         <h2 style={{ fontSize: 28, marginBottom: 24 }}>EPs &amp; Singles</h2>

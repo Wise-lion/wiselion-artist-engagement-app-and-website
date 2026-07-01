@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WISELION — Hero (editable)</title>
+  <!--
+    STANDALONE HERO — edit this anywhere, then send it back and I'll wire it
+    into the live site. Self-contained: fonts load from Google, the lion art
+    loads from the live site, all CSS is inline below.
+
+    To swap in an ANIMATED hero: replace the <video> source with your file
+    (e.g. a Higgsfield export). It already loops, autoplays, and is muted.
+    Keep the PNG as the "poster" so it shows instantly + as a fallback.
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --neon-pink:#ff006e; --neon-cyan:#00d9ff; --neon-gold:#ffd60a; --neon-purple:#b500ff;
+      --black:#0a0a0a; --display:'Orbitron',sans-serif; --mono:'Space Mono',monospace;
+    }
+    *{box-sizing:border-box;}
+    body{margin:0;background:var(--black);color:var(--neon-cyan);font-family:var(--mono);}
+
+    /* HERO */
+    .hero{position:relative;text-align:center;padding:90px 22px 80px;overflow:hidden;min-height:560px;}
+    /* Animated/video background. Swap the <video> source to change it. */
+    .hero-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.38;filter:saturate(1.12);}
+    .hero-vignette{position:absolute;inset:0;background:radial-gradient(62% 72% at 50% 35%,transparent 42%,#0a0a0a 100%);}
+    .hero-veil{position:absolute;inset:0;background:radial-gradient(70% 80% at 50% 30%,#b500ff22,transparent 70%);}
+    .scanlines{position:absolute;inset:0;pointer-events:none;opacity:.12;
+      background:repeating-linear-gradient(0deg,#00d9ff 0,#00d9ff 1px,transparent 1px,transparent 4px);}
+
+    /* HUD corner brackets */
+    .hud::before,.hud::after,.hud .c-bl,.hud .c-br{content:'';position:absolute;width:22px;height:22px;pointer-events:none;}
+    .hud::before{top:10px;left:10px;border-left:2px solid var(--neon-cyan);border-top:2px solid var(--neon-cyan);}
+    .hud::after{top:10px;right:10px;border-right:2px solid var(--neon-cyan);border-top:2px solid var(--neon-cyan);}
+    .hud .c-bl{bottom:10px;left:10px;border-left:2px solid var(--neon-pink);border-bottom:2px solid var(--neon-pink);}
+    .hud .c-br{bottom:10px;right:10px;border-right:2px solid var(--neon-pink);border-bottom:2px solid var(--neon-pink);}
+
+    h1{font-family:var(--display);color:#fff;margin:0;font-size:56px;letter-spacing:4px;text-shadow:0 0 14px var(--neon-cyan);}
+    .tagline{font-family:var(--mono);letter-spacing:6px;color:var(--neon-pink);margin-top:8px;}
+
+    .btn{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:1px;padding:12px 28px;
+      cursor:pointer;border:none;display:inline-flex;align-items:center;gap:8px;text-decoration:none;
+      clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);}
+    .btn-pink{background:var(--neon-pink);color:var(--black);box-shadow:0 0 22px #ff006e88;}
+    .btn-cyan{background:transparent;color:var(--neon-cyan);border:1px solid var(--neon-cyan);box-shadow:0 0 18px #00d9ff55;}
+  </style>
+</head>
+<body>
+  <header class="hero hud">
+    <span class="c-bl"></span><span class="c-br"></span>
+
+    <!-- BACKGROUND: video (animated). To use your Higgsfield video, change the
+         <source> below to your file. The poster is the still lion art. -->
+    <video class="hero-media" autoplay loop muted playsinline
+           poster="https://wiselion-artist-engagement-app-and.vercel.app/hero-lion.png">
+      <source src="https://wiselion-artist-engagement-app-and.vercel.app/hero-lion.mp4" type="video/mp4" />
+    </video>
+
+    <div class="hero-vignette"></div>
+    <div class="hero-veil"></div>
+    <div class="scanlines"></div>
+
+    <div style="position:relative;z-index:2;">
+      <h1>WISELION</h1>
+      <div class="tagline">MUSICIAN · LION ACTIVIST · KING</div>
+      <div style="display:flex;gap:14px;justify-content:center;margin-top:28px;flex-wrap:wrap;">
+        <a class="btn btn-pink" href="#music">▶ STREAM NOW</a>
+        <a class="btn btn-cyan" href="#pride">JOIN THE PRIDE</a>
+      </div>
+    </div>
+  </header>
+</body>
+</html>

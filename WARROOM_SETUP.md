@@ -13,7 +13,13 @@ already built. This is what's left, in order.
 3. Click **Create API key** → choose a project (or create one) → copy the key
    (starts with `AIza...`).
 
-## 2. Create a Telegram bot (this is how you talk to / control War Room)
+## 2. Create a Telegram bot — OPTIONAL for drafting
+
+> **You can skip this for the Wiselion draft loop.** The War Room WebSocket
+> server (what Wiselion talks to) only needs `GOOGLE_API_KEY`. The Telegram
+> token is required only for claudeclaw's separate Telegram chat assistant
+> (`dist/index.js`). Set it up later if you want to chat with War Room from
+> your phone.
 
 1. Open Telegram, search for **@BotFather** (the official bot-creation bot).
 2. Send `/newbot`.

@@ -50,6 +50,12 @@ app.use((err: any, _req: express.Request, res: express.Response, _next: express.
   res.status(err.status || 500).json({ error: err.message || 'Internal error' });
 });
 
+// Safety net: an async route handler that rejects (Express 4 doesn't catch
+// those) must not take the whole server down. Log it and keep serving.
+process.on('unhandledRejection', (reason) => {
+  console.error('UnhandledRejection (kept alive):', reason);
+});
+
 const httpServer = createServer(app);
 initSocket(httpServer);
 startCronJobs();

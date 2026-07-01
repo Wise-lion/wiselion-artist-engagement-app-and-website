@@ -28,7 +28,10 @@ router.post('/draft/drop/:drawId', requireAdmin, async (req, res) => {
     if (e instanceof WarRoomOfflineError) {
       return res.status(503).json({ error: 'War Room is offline — start the agent server (port 7860) and retry.' });
     }
-    throw e;
+    // Never rethrow from an async Express 4 handler — it becomes an unhandled
+    // rejection and crashes the process. Respond 500 instead.
+    console.error('Draft generation failed:', e);
+    return res.status(500).json({ error: (e as Error).message || 'Draft generation failed' });
   }
 });
 

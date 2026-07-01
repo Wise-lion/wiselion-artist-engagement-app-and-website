@@ -67,7 +67,9 @@ export async function requestDraft(agent: Agent, prompt: string, timeoutMs = 600
     };
     const timer = setTimeout(() => finish(buffer ? undefined : new Error('War Room timed out')), timeoutMs);
 
-    ws.send(JSON.stringify({ type: 'text_input', text: `@${agent}: ${prompt}` }));
+    // draft_request = War Room's text-in/text-out path (the voice session's
+    // text_input replies with AUDIO, which we can't use for drafts).
+    ws.send(JSON.stringify({ type: 'draft_request', text: `@${agent}: ${prompt}` }));
 
     ws.on('message', (raw) => {
       let msg: any;

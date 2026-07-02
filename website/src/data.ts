@@ -30,8 +30,9 @@ export const orderMailto = (product: string, price: string) =>
     `I'd like to order the ${product} — ${price}.\n\nSize: \nColor: \nQuantity: \n\nShipping name:\nAddress:\n\n(Wiselion will reply with payment + confirmation.)`
   )}`;
 
-// Fallback shop link for the Drop Reel CTA etc.
-export const SHOP_URL = `mailto:${ORDER_EMAIL}?subject=${encodeURIComponent('Wiselion order')}`;
+// The real storefront (Big Cartel). COP NOW buttons open this until each tee
+// gets its own product URL (fill buyUrl per item once products are published).
+export const SHOP_URL = 'https://wiselion.bigcartel.com';
 
 // Real tee artwork (shared with the app via /public/drop-reel/).
 // buyUrl: paste each product's Printful / Teespring / Stripe link here. When

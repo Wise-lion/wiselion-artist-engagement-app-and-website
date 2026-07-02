@@ -3,6 +3,7 @@ import { prisma } from '../lib/prisma';
 import { requireAdmin } from '../middleware/auth';
 import { draftDropPromo } from '../services/visibility';
 import { sendToWarroom, isWarRoomOnline, WarRoomOfflineError } from '../services/warroom';
+import { sendMail } from '../services/mailer';
 
 const router = Router();
 
@@ -57,16 +58,31 @@ router.patch('/drafts/:id', requireAdmin, async (req, res) => {
     return res.json(updated);
   }
 
-  // Approve → mark APPROVED, then ask @comms to publish (best-effort).
+  // Approve → mark APPROVED, then DELIVER (email channel first — the safe one).
+  // For channel 'email' the mail IS the campaign; for social channels we email
+  // the ready-to-paste copy to the owner until real platform APIs are wired.
   const updated = await prisma.promoDraft.update({ where: { id: draft.id }, data: { status: 'APPROVED' } });
+
+  const subject =
+    draft.channel === 'email'
+      ? draft.subject || 'Wiselion — new drop'
+      : `[Wiselion] Approved ${draft.channel} post — ready to paste`;
+  const delivered = await sendMail(subject, draft.body);
+
+  if (delivered) {
+    const published = await prisma.promoDraft.update({ where: { id: draft.id }, data: { status: 'PUBLISHED' } });
+    return res.json(published);
+  }
+
+  // No mail credential (or send failed) → best-effort hand-off to @comms, and
+  // stay APPROVED so it can be retried once a channel is configured.
   try {
     await sendToWarroom(
       'comms',
       `Publish this approved ${draft.channel} post${draft.subject ? ` (subject: ${draft.subject})` : ''}: ${draft.body}`
     );
-    await prisma.promoDraft.update({ where: { id: draft.id }, data: { status: 'PUBLISHED' } });
   } catch {
-    // Stay APPROVED if War Room is offline; can be retried.
+    /* War Room offline — fine, draft remains APPROVED */
   }
   res.json(updated);
 });

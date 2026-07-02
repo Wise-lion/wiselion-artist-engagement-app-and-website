@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, NavLink, Navigate } from 'react-router-dom';
 import { onAuth, signOut } from './services/firebase';
-import { DEMO_MODE } from './services/api';
+import { DEMO_MODE, DEV_BACKEND } from './services/api';
 import { colors } from './components/ui';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -17,8 +17,8 @@ export default function App() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    // Demo mode skips Firebase entirely with a fake admin user.
-    if (DEMO_MODE) { setUser({ email: 'demo@wiselion.app' }); setReady(true); return; }
+    // Demo + dev-backend modes skip Firebase entirely with a fake admin user.
+    if (DEMO_MODE || DEV_BACKEND) { setUser({ email: 'dev@wiselion.app' }); setReady(true); return; }
     return onAuth((u) => { setUser(u); setReady(true); });
   }, []);
 

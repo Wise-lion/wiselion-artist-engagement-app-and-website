@@ -1,7 +1,7 @@
 // Wiselion — Claude-native cyberpunk artist site (single-page, Manus-free).
 // Sections: Hero · Music · Tours · Merch · Mission · Join the Pride.
 import { useEffect, useState } from 'react';
-import { MUSIC, STREAM_LINKS, TOURS, MERCH, PILLARS, IMPACT, TIERS, SHOP_URL, orderMailto } from './data';
+import { MUSIC, STREAM_LINKS, TOURS, MERCH, PILLARS, IMPACT, TIERS, SHOP_URL, orderMailto, INSTAGRAM_URL, INSTAGRAM_HANDLE } from './data';
 import { getLiveProducts, getLiveSongs, LiveProduct, LiveMedia } from './liveData';
 import DropReel from './DropReel';
 import AudioPlayer from './AudioPlayer';
@@ -289,8 +289,11 @@ export default function App() {
       <Reel />
       <Mission />
       <Pride />
-      <footer style={{ borderTop: '1px solid #00d9ff44', padding: '20px 22px', fontSize: 10, color: '#00d9ff77', letterSpacing: 2 }}>
-        © WISELION · A TRIBE OF KINGS LINE · built Claude-native
+      <footer style={{ borderTop: '1px solid #00d9ff44', padding: '20px 22px', fontSize: 10, color: '#00d9ff77', letterSpacing: 2, display: 'flex', flexWrap: 'wrap', gap: 12, justifyContent: 'space-between', alignItems: 'center' }}>
+        <span>© WISELION · A TRIBE OF KINGS LINE · built Claude-native</span>
+        <a href={INSTAGRAM_URL} target="_blank" rel="noreferrer" style={{ color: 'var(--neon-gold)', letterSpacing: 2 }}>
+          FOLLOW @{INSTAGRAM_HANDLE.toUpperCase()}
+        </a>
       </footer>
     </>
   );

@@ -22,6 +22,10 @@ export const TOURS = [
 // is connected to Printful. "COP NOW" opens a pre-filled order email.
 export const ORDER_EMAIL = 'wlikeking@gmail.com';
 
+// Social — the official Instagram (@Wiselionlikeking).
+export const INSTAGRAM_HANDLE = 'Wiselionlikeking';
+export const INSTAGRAM_URL = `https://instagram.com/${INSTAGRAM_HANDLE}`;
+
 // Build a mailto: link pre-filled with the product, so orders arrive ready to
 // fulfil. Swap to real per-product checkout URLs later (set buyUrl on MERCH).
 export const orderMailto = (product: string, price: string) =>

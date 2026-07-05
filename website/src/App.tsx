@@ -1,7 +1,7 @@
 // Wiselion — Claude-native cyberpunk artist site (single-page, Manus-free).
 // Sections: Hero · Music · Tours · Merch · Mission · Join the Pride.
 import { useEffect, useState } from 'react';
-import { MUSIC, STREAM_LINKS, TOURS, MERCH, PILLARS, IMPACT, TIERS, SHOP_URL, orderMailto, INSTAGRAM_URL, INSTAGRAM_HANDLE } from './data';
+import { MUSIC, STREAM_LINKS, TOURS, MERCH, PILLARS, IMPACT, TIERS, SHOP_URL, orderMailto, INSTAGRAM_URL, INSTAGRAM_HANDLE, TIKTOK_URL, TIKTOK_HANDLE } from './data';
 import { getLiveProducts, getLiveSongs, LiveProduct, LiveMedia } from './liveData';
 import DropReel from './DropReel';
 import AudioPlayer from './AudioPlayer';
@@ -43,6 +43,12 @@ function Nav() {
             <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
             <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
             <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+          </svg>
+        </a>
+        <a href={TIKTOK_URL} target="_blank" rel="noreferrer" title={`@${TIKTOK_HANDLE}`}
+           style={{ color: 'var(--neon-gold)', display: 'inline-flex', alignItems: 'center' }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-label="TikTok">
+            <path d="M16.5 3c.4 2.3 1.7 3.7 3.9 3.9v2.6c-1.3.1-2.5-.3-3.9-1.1v5.5c0 4-3 6.6-6.6 5.9-3.1-.6-4.4-4-3.2-6.8.9-2 2.9-3 5.3-2.8v2.7c-.4-.1-.9-.2-1.4-.1-1.3.2-2 1.2-1.8 2.5.2 1.3 1.5 2 2.8 1.7 1-.3 1.6-1.2 1.6-2.4V3h3.3z" />
           </svg>
         </a>
       </div>
@@ -299,9 +305,14 @@ export default function App() {
       <Pride />
       <footer style={{ borderTop: '1px solid #00d9ff44', padding: '20px 22px', fontSize: 10, color: '#00d9ff77', letterSpacing: 2, display: 'flex', flexWrap: 'wrap', gap: 12, justifyContent: 'space-between', alignItems: 'center' }}>
         <span>© WISELION · A TRIBE OF KINGS LINE · built Claude-native</span>
-        <a href={INSTAGRAM_URL} target="_blank" rel="noreferrer" style={{ color: 'var(--neon-gold)', letterSpacing: 2 }}>
-          FOLLOW @{INSTAGRAM_HANDLE.toUpperCase()}
-        </a>
+        <span style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+          <a href={INSTAGRAM_URL} target="_blank" rel="noreferrer" style={{ color: 'var(--neon-gold)', letterSpacing: 2 }}>
+            INSTAGRAM @{INSTAGRAM_HANDLE.toUpperCase()}
+          </a>
+          <a href={TIKTOK_URL} target="_blank" rel="noreferrer" style={{ color: 'var(--neon-gold)', letterSpacing: 2 }}>
+            TIKTOK @{TIKTOK_HANDLE.toUpperCase()}
+          </a>
+        </span>
       </footer>
     </>
   );

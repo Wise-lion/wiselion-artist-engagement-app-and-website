@@ -22,9 +22,11 @@ export const TOURS = [
 // is connected to Printful. "COP NOW" opens a pre-filled order email.
 export const ORDER_EMAIL = 'wlikeking@gmail.com';
 
-// Social — the official Instagram (@Wiselionlikeking).
+// Social — the official channels (@Wiselionlikeking).
 export const INSTAGRAM_HANDLE = 'Wiselionlikeking';
 export const INSTAGRAM_URL = `https://instagram.com/${INSTAGRAM_HANDLE}`;
+export const TIKTOK_HANDLE = 'Wiselionlikeking';
+export const TIKTOK_URL = `https://tiktok.com/@${TIKTOK_HANDLE}`;
 
 // Build a mailto: link pre-filled with the product, so orders arrive ready to
 // fulfil. Swap to real per-product checkout URLs later (set buyUrl on MERCH).

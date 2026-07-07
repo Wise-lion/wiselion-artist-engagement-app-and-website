@@ -4,6 +4,7 @@ import { requireAdmin } from '../middleware/auth';
 import { draftDropPromo } from '../services/visibility';
 import { sendToWarroom, isWarRoomOnline, WarRoomOfflineError } from '../services/warroom';
 import { sendMail } from '../services/mailer';
+import { publishToInstagram, instagramConfigured } from '../services/instagram';
 
 const router = Router();
 
@@ -58,11 +59,27 @@ router.patch('/drafts/:id', requireAdmin, async (req, res) => {
     return res.json(updated);
   }
 
-  // Approve → mark APPROVED, then DELIVER (email channel first — the safe one).
-  // For channel 'email' the mail IS the campaign; for social channels we email
-  // the ready-to-paste copy to the owner until real platform APIs are wired.
+  // Approve → mark APPROVED, then DELIVER.
   const updated = await prisma.promoDraft.update({ where: { id: draft.id }, data: { status: 'APPROVED' } });
 
+  // Instagram: if the Graph API is configured, post it for real.
+  if (draft.channel === 'instagram' && instagramConfigured()) {
+    try {
+      const assetUrl = (draft.meta as any)?.asset as string | undefined;
+      const mediaId = await publishToInstagram(draft.body, assetUrl);
+      const meta = { ...((draft.meta as any) || {}), publishedRef: mediaId };
+      const published = await prisma.promoDraft.update({
+        where: { id: draft.id },
+        data: { status: 'PUBLISHED', meta },
+      });
+      return res.json(published);
+    } catch (e) {
+      console.error('Instagram publish failed:', e);
+      // Fall through to email/hold so the draft isn't lost.
+    }
+  }
+
+  // Email channel = the campaign itself; other channels = ready-to-paste copy.
   const subject =
     draft.channel === 'email'
       ? draft.subject || 'Wiselion — new drop'

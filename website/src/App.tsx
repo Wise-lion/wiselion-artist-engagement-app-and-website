@@ -5,6 +5,7 @@ import { MUSIC, STREAM_LINKS, TOURS, MERCH, PILLARS, IMPACT, TIERS, SHOP_URL, or
 import { getLiveProducts, getLiveSongs, LiveProduct, LiveMedia } from './liveData';
 import DropReel from './DropReel';
 import AudioPlayer from './AudioPlayer';
+import Chatbot from './Chatbot';
 
 // Shape the live API data into what the existing card markup expects, so the
 // UI is identical whether it's showing real or placeholder data.
@@ -314,6 +315,7 @@ export default function App() {
           </a>
         </span>
       </footer>
+      <Chatbot />
     </>
   );
 }
